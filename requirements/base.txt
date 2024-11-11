@@ -1,0 +1,46 @@
+# Core
+Django==4.2.7
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+djoser==2.2.0
+
+# Database
+mysqlclient==2.2.0
+
+# Security
+django-cors-headers==4.3.0
+django-simple-captcha==0.5.18
+django-ipware==5.0.0
+
+# Cache & Sessions
+django-redis==5.4.0
+redis==5.0.1
+
+# Image Processing
+Pillow==10.1.0
+
+# API Documentation
+drf-yasg==1.21.7
+
+# Filtering
+django-filter==23.5
+
+# Security Headers
+django-csp==3.7
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Rate Limiting
+django-ratelimit==4.1.0
+
+# Internationalization
+django-modeltranslation==0.18.11
+
+# Validation
+django-phonenumber-field==7.2.0
+phonenumbers==8.13.25
+
+# Utilities
+python-slugify==8.0.1
+pytz==2023.3

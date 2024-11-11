@@ -1,0 +1,117 @@
+# Python sanal ortam oluşturma
+python -m venv myenv
+
+# Windows için sanal ortamı aktif etme
+myenv\Scripts\activate
+
+# Linux/Mac için sanal ortamı aktif etme
+source myenv/bin/activate
+
+# Gerekli paketlerin kurulumu
+pip install django
+pip install djangorestframework
+pip install djoser
+pip install django-cors-headers
+pip install mysqlclient
+pip install django-ratelimit
+pip install django-simple-captcha
+pip install django-ipware
+pip install pillow
+
+# Django projesi oluşturma
+django-admin startproject core .
+
+# Users app'ini oluşturma
+python manage.py startapp users
+
+# MySQL veritabanı oluşturma
+mysql -u root -p
+CREATE DATABASE django_auth_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# MailHog Kurulumu (Docker ile)
+docker pull mailhog/mailhog
+docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+
+# Migrations oluşturma ve uygulama
+python manage.py makemigrations
+python manage.py migrate
+
+# Süper kullanıcı oluşturma
+python manage.py createsuperuser
+
+*************************************************
+pip install -r requirements/development.txt
+pip install -r requirements/production.txt
+
+**************************************************
+Bu dosyalarla birlikte projemiz artık tam ve çalışır durumda. Projede şunlar bulunuyor:
+
+Özel kullanıcı modeli (email ile giriş)
+Kapsamlı profil modeli
+JWT tabanlı kimlik doğrulama
+Email doğrulama ve şifre sıfırlama
+CORS koruması
+XSS koruması
+Giriş denemesi limitleme (3 başarısız denemeden sonra captcha)
+IP bazlı engelleme (10 başarısız denemeden sonra 30 dakika engelleme)
+Profile için tam CRUD işlemleri
+MailHog ile email testi
+MySQL veritabanı entegrasyonu
+
+Projeyi çalıştırmak için:
+
+Sanal ortamı aktif edin
+requirements.txt dosyasındaki bağımlılıkları yükleyin
+MySQL veritabanını oluşturun
+MailHog'u Docker ile başlatın
+Migrasyonları yapın
+Süper kullanıcı oluşturun
+Sunucuyu başlatın:
+
+bashCopypython manage.py runserver
+API Endpoints:
+
+Kullanıcı İşlemleri:
+
+
+POST /auth/users/ (Kayıt)
+POST /auth/jwt/create/ (Giriş)
+POST /auth/users/activation/ (Hesap Aktivasyonu)
+POST /auth/users/resend_activation/ (Aktivasyon Maili Tekrar Gönderme)
+POST /auth/users/reset_password/ (Şifre Sıfırlama)
+POST /auth/users/reset_password_confirm/ (Şifre Sıfırlama Onayı)
+
+
+Profil İşlemleri:
+
+
+GET /api/profiles/me/ (Profil Görüntüleme)
+PUT /api/profiles/update_me/ (Profil Güncelleme)
+
+MailHog arayüzüne http://localhost:8025 adresinden erişebilirsiniz.
+
+**********************GIT CONFIG ****************
+# 1. Git'i projenize kurun (proje dizininde)
+git init
+
+# 2. .gitignore dosyasını oluşturun (yukarıda verdiğimiz içerikle)
+touch .gitignore
+
+# 3. İlk commit için dosyaları hazırlayın
+git add .
+
+# 4. İlk commit'i yapın
+git commit -m "Initial commit"
+
+# 5. GitHub'da yeni repo oluşturun (bu komutu GitHub repo oluşturduktan sonra kullanın)
+git remote add origin https://github.com/kullaniciadi/repo-adi.git
+
+# 6. Main branch'i oluşturun ve GitHub'a push edin
+git branch -M main
+git push -u origin main
+
+# 7. Development branch oluşturun
+git checkout -b development
+
+# 8. Development branch'i GitHub'a push edin
+git push -u origin development

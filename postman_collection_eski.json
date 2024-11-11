@@ -1,0 +1,614 @@
+{
+    "info": {
+      "_postman_id": "8f6b2e3a-5d4c-4f3b-8e9c-2d9e7f5c3b1a",
+      "name": "Django Auth API - Complete",
+      "description": "Django Auth API - Djoser ve Profile endpointleri",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Authentication - Users",
+        "item": [
+          {
+            "name": "Register User",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"test@example.com\",\n    \"username\": \"testuser\",\n    \"password\": \"Test123!\",\n    \"re_password\": \"Test123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", ""]
+              },
+              "description": "Yeni kullanıcı kaydı"
+            }
+          },
+          {
+            "name": "Get User Me",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/auth/users/me/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "me", ""]
+              },
+              "description": "Giriş yapmış kullanıcının bilgileri"
+            }
+          },
+          {
+            "name": "Update User Me",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"first_name\": \"Updated\",\n    \"last_name\": \"User\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/me/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "me", ""]
+              },
+              "description": "Kullanıcı bilgilerini güncelle"
+            }
+          },
+          {
+            "name": "Delete User Me",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"current_password\": \"Test123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/me/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "me", ""]
+              },
+              "description": "Kullanıcı hesabını sil"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Authentication - Token",
+        "item": [
+          {
+            "name": "Login (Get Token)",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = JSON.parse(responseBody);",
+                    "postman.setEnvironmentVariable(\"access_token\", jsonData.access);",
+                    "postman.setEnvironmentVariable(\"refresh_token\", jsonData.refresh);"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"Test123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/create/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "create", ""]
+              },
+              "description": "Giriş yap ve token al"
+            }
+          },
+          {
+            "name": "Refresh Token",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/refresh/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "refresh", ""]
+              },
+              "description": "Access token'ı yenile"
+            }
+          },
+          {
+            "name": "Verify Token",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"token\": \"{{access_token}}\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/verify/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "verify", ""]
+              },
+              "description": "Token geçerliliğini kontrol et"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Authentication - Email & Activation",
+        "item": [
+          {
+            "name": "Activate Account",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"uid\": \"uid-from-email\",\n    \"token\": \"token-from-email\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/activation/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "activation", ""]
+              },
+              "description": "Hesap aktivasyonu"
+            }
+          },
+          {
+            "name": "Resend Activation Email",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"test@example.com\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/resend_activation/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "resend_activation", ""]
+              },
+              "description": "Aktivasyon mailini tekrar gönder"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Authentication - Password",
+        "item": [
+          {
+            "name": "Change Password",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"current_password\": \"Test123!\",\n    \"new_password\": \"NewTest123!\",\n    \"re_new_password\": \"NewTest123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/set_password/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "set_password", ""]
+              },
+              "description": "Şifre değiştir (giriş yapmış kullanıcı)"
+            }
+          },
+          {
+            "name": "Reset Password",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"test@example.com\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/reset_password/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "reset_password", ""]
+              },
+              "description": "Şifre sıfırlama maili gönder"
+            }
+          },
+          {
+            "name": "Reset Password Confirm",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"uid\": \"uid-from-email\",\n    \"token\": \"token-from-email\",\n    \"new_password\": \"NewTest123!\",\n    \"re_new_password\": \"NewTest123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/reset_password_confirm/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "reset_password_confirm", ""]
+              },
+              "description": "Şifre sıfırlama işlemini tamamla"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Profile Operations",
+        "item": [
+          {
+            "name": "Get My Profile",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/me/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", "me", ""]
+              },
+              "description": "Kendi profilini görüntüle"
+            }
+          },
+          {
+            "name": "Update My Profile",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"bio\": \"Updated bio\",\n    \"birth_date\": \"1990-01-01\",\n    \"phone_number\": \"+905551234567\",\n    \"gender\": \"M\",\n    \"address\": \"Test Address\",\n    \"city\": \"Test City\",\n    \"country\": \"Test Country\",\n    \"occupation\": \"Developer\",\n    \"company\": \"Test Company\",\n    \"website\": \"https://example.com\",\n    \"social_media_links\": {\n        \"twitter\": \"https://twitter.com/test\",\n        \"linkedin\": \"https://linkedin.com/in/test\"\n    },\n    \"interests\": [\"coding\", \"reading\"]\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/update_me/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", "update_me", ""]
+              },
+              "description": "Profili güncelle"
+            }
+          },
+          {
+            "name": "Partial Update My Profile",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"bio\": \"Updated bio\",\n    \"occupation\": \"Senior Developer\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/update_me/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", "update_me", ""]
+              },
+              "description": "Profili kısmen güncelle"
+            }
+          },
+          {
+            "name": "Upload Avatar",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "avatar",
+                    "type": "file",
+                    "src": []
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/{{profile_id}}/upload_avatar/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", "{{profile_id}}", "upload_avatar", ""]
+              },
+              "description": "Profil fotoğrafı yükle"
+            }
+          },
+          {
+            "name": "Remove Avatar",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/{{profile_id}}/remove_avatar/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", "{{profile_id}}", "remove_avatar", ""]
+              },
+              "description": "Profil fotoğrafını kaldır"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Admin Operations",
+        "item": [
+          {
+            "name": "List All Users",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/users/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "users", ""]
+              },
+              "description": "Tüm kullanıcıları listele (sadece admin)"
+            }
+          },
+          {
+            "name": "Get User Detail",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/users/{{user_id}}/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "users", "{{user_id}}", ""]
+              },
+              "description": "Belirli bir kullanıcının detayları (sadece admin)"
+            }
+          },
+          {
+            "name": "Update User",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"is_active\": true,\n    \"first_name\": \"Updated\",\n    \"last_name\": \"Name\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/api/v1/users/{{user_id}}/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "users", "{{user_id}}", ""]
+              },
+              "description": "Kullanıcı bilgilerini güncelle (sadece admin)"
+            }
+          },
+          {
+            "name": "Delete User",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/users/{{user_id}}/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "users", "{{user_id}}", ""]
+              },
+              "description": "Kullanıcıyı sil (sadece admin)"
+            }
+          },
+          {
+            "name": "List All Profiles",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", ""]
+              },
+              "description": "Tüm profilleri listele (sadece admin)"
+            }
+          },
+          {
+            "name": "Search Profiles",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/search/?q=developer",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", "search", ""],
+                "query": [
+                  {
+                    "key": "q",
+                    "value": "developer"
+                  }
+                ]
+              },
+              "description": "Profillerde arama yap (sadece admin)"
+            }
+          },
+          {
+            "name": "Filter Profiles",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/v1/profiles/?country=Turkey&gender=M",
+                "host": ["{{base_url}}"],
+                "path": ["api", "v1", "profiles", ""],
+                "query": [
+                  {
+                    "key": "country",
+                    "value": "Turkey"
+                  },
+                  {
+                    "key": "gender",
+                    "value": "M"
+                  }
+                ]
+              },
+              "description": "Profilleri filtrele (sadece admin)"
+            }
+          }
+        ]
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "type": "text/javascript",
+          "exec": [""]
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "type": "text/javascript",
+          "exec": [""]
+        }
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:8000",
+        "type": "string"
+      }
+    ]
+  }

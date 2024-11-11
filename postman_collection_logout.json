@@ -1,0 +1,231 @@
+{
+    "info": {
+      "_postman_id": "8f6b2e3a-5d4c-4f3b-8e9c-2d9e7f5c3b1a",
+      "name": "Django Auth API - Complete",
+      "description": "Django Auth API - Djoser ve Profile endpointleri",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Authentication - Users",
+        "item": [
+          {
+            "name": "Register User",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"test@example.com\",\n    \"username\": \"testuser\",\n    \"password\": \"StrongP@ss123!\",\n    \"re_password\": \"StrongP@ss123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", ""]
+              },
+              "description": "Yeni kullanıcı kaydı (Güçlü parola gerekli)"
+            }
+          },
+          {
+            "name": "Get User Me",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/auth/users/me/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "me", ""]
+              },
+              "description": "Giriş yapmış kullanıcının bilgileri"
+            }
+          },
+          {
+            "name": "Update User Me",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"first_name\": \"Updated\",\n    \"last_name\": \"User\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/me/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "me", ""]
+              },
+              "description": "Kullanıcı bilgilerini güncelle"
+            }
+          },
+          {
+            "name": "Delete User Me",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"current_password\": \"Test123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/users/me/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "users", "me", ""]
+              },
+              "description": "Kullanıcı hesabını sil"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Authentication - Token",
+        "item": [
+          {
+            "name": "Login (Get Token)",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = JSON.parse(responseBody);",
+                    "postman.setEnvironmentVariable(\"access_token\", jsonData.access);",
+                    "postman.setEnvironmentVariable(\"refresh_token\", jsonData.refresh);",
+                    "// Rate limit bilgisini kontrol et",
+                    "var rateLimit = postman.getResponseHeader(\"X-RateLimit-Remaining\");",
+                    "if (rateLimit) {",
+                    "    console.log('Rate limit remaining: ' + rateLimit);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"StrongP@ss123!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/create/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "create", ""]
+              },
+              "description": "Giriş yap ve token al (Rate limit uygulanır)"
+            }
+          },
+          {
+            "name": "Refresh Token",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/refresh/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "refresh", ""]
+              },
+              "description": "Access token'ı yenile"
+            }
+          },
+          {
+            "name": "Verify Token",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"token\": \"{{access_token}}\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/verify/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "verify", ""]
+              },
+              "description": "Token geçerliliğini kontrol et"
+            }
+          },
+          {
+            "name": "Logout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "JWT {{access_token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/jwt/logout/",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "jwt", "logout", ""]
+              },
+              "description": "Kullanıcı çıkış yapar ve geçerli token'ları iptal eder"
+            }
+          }
+        ]
+      }
+    
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:8000",
+        "type": "string"
+      }
+    ]
+  }
+  

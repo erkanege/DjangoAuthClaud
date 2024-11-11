@@ -115,3 +115,6 @@ git checkout -b development
 
 # 8. Development branch'i GitHub'a push edin
 git push -u origin development
+
+# Powershell de projenin tree yapısını görmek için
+tree /f

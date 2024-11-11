@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
@@ -13,15 +13,14 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
+          MYSQL_DATABASE: test_db
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: django_auth_db_test
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - uses: actions/checkout@v2
-    
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -35,17 +34,27 @@ jobs:
     - name: Run Tests
       env:
         DJANGO_SETTINGS_MODULE: core.settings.development
-        DB_NAME: django_auth_db_test
+        DB_NAME: test_db
         DB_USER: root
         DB_PASSWORD: root
         DB_HOST: 127.0.0.1
-        DB_PORT: 3306
       run: |
         python manage.py test
         coverage run manage.py test
         coverage report
-
+    
     - name: Run Linting
       run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 .
+        black . --check
+        isort . --check-only
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to Production
+      run: |
+        echo "Deploy steps here"
